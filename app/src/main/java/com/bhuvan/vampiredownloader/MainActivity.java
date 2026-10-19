@@ -212,6 +212,7 @@ public class MainActivity extends Activity {
                 .setMediaPlaybackRequiresUserGesture(true);
 
         webView.setWebChromeClient(new WebChromeClient());
+
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -266,14 +267,12 @@ public class MainActivity extends Activity {
 
         webView.loadUrl("https://www.youtube.com/");
     }
-
     private void loadAddress() {
         if (addressBox == null) {
             return;
         }
 
         String input = addressBox.getText().toString().trim();
-
         if (input.isEmpty()) {
             return;
         }
@@ -326,17 +325,15 @@ public class MainActivity extends Activity {
 
             try {
                 URL url = new URL(mediaUrl);
-
-                connection =
-                        (HttpURLConnection) url.openConnection();
-
+                connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(15000);
                 connection.setReadTimeout(30000);
                 connection.setInstanceFollowRedirects(true);
 
                 if (userAgent != null && !userAgent.isEmpty()) {
                     connection.setRequestProperty(
-                            "User-Agent", userAgent
+                            "User-Agent",
+                            userAgent
                     );
                 }
 
@@ -345,9 +342,7 @@ public class MainActivity extends Activity {
                 int code = connection.getResponseCode();
 
                 if (code < 200 || code >= 300) {
-                    throw new Exception(
-                            "Server response " + code
-                    );
+                    throw new Exception("Server response " + code);
                 }
 
                 String safeName = sanitizeName(suggestedName);
@@ -357,9 +352,7 @@ public class MainActivity extends Activity {
                             System.currentTimeMillis();
                 }
 
-                File dir = new File(
-                        getFilesDir(), "downloads"
-                );
+                File dir = new File(getFilesDir(), "downloads");
 
                 if (!dir.exists() && !dir.mkdirs()) {
                     throw new Exception(
@@ -407,8 +400,7 @@ public class MainActivity extends Activity {
                 runOnUiThread(() -> {
                     if (status != null) {
                         status.setText(
-                                "Saved privately: " +
-                                done.getName()
+                                "Saved privately: " + done.getName()
                         );
                     }
 
@@ -426,9 +418,7 @@ public class MainActivity extends Activity {
 
                 runOnUiThread(() -> {
                     if (status != null) {
-                        status.setText(
-                                "Download failed: " + msg
-                        );
+                        status.setText("Download failed: " + msg);
                     }
 
                     new AlertDialog.Builder(this)
@@ -482,11 +472,10 @@ public class MainActivity extends Activity {
         }
 
         return decoded;
-    }
+                }
 
-    private void showLibrary() {
+private void showLibrary() {
         setupRoot();
-
         root.addView(heading("My Private Files"));
 
         TextView info = new TextView(this);
@@ -494,55 +483,36 @@ public class MainActivity extends Activity {
                 "Files are stored inside this app's private storage, " +
                 "not in the public Gallery or Downloads folder."
         );
-        info.setPadding(
-                dp(16), 0, dp(16), dp(8)
-        );
-
+        info.setPadding(dp(16), 0, dp(16), dp(8));
         root.addView(info);
 
         ScrollView scroll = new ScrollView(this);
-
         LinearLayout list = new LinearLayout(this);
         list.setOrientation(LinearLayout.VERTICAL);
 
-        File dir = new File(
-                getFilesDir(), "downloads"
-        );
-
-        File[] items = dir.exists()
-                ? dir.listFiles()
-                : null;
+        File dir = new File(getFilesDir(), "downloads");
+        File[] items = dir.exists() ? dir.listFiles() : null;
 
         if (items == null || items.length == 0) {
             TextView empty = new TextView(this);
-
             empty.setText(
                     "No downloads yet.\n\n" +
                     "Browse a website and tap a direct " +
                     "downloadable media link."
             );
-
-            empty.setPadding(
-                    dp(16), dp(20), dp(16), dp(20)
-            );
-
+            empty.setPadding(dp(16), dp(20), dp(16), dp(20));
             list.addView(empty);
-
         } else {
             for (File f : items) {
                 LinearLayout row = new LinearLayout(this);
                 row.setOrientation(LinearLayout.VERTICAL);
-                row.setPadding(
-                        dp(12), dp(8), dp(12), dp(8)
-                );
+                row.setPadding(dp(12), dp(8), dp(12), dp(8));
 
                 TextView name = new TextView(this);
                 name.setText(
-                        f.getName() + "\n" +
-                        readableSize(f.length())
+                        f.getName() + "\n" + readableSize(f.length())
                 );
                 name.setTextSize(15);
-
                 row.addView(name);
 
                 LinearLayout actions = new LinearLayout(this);
@@ -572,12 +542,10 @@ public class MainActivity extends Activity {
         }
 
         scroll.addView(list);
-
         root.addView(
                 scroll,
                 new LinearLayout.LayoutParams(-1, 0, 1)
         );
-
         addNav();
     }
 
@@ -588,13 +556,13 @@ public class MainActivity extends Activity {
 
         if (bytes < 1024 * 1024) {
             return String.format(
-                    Locale.US, "%.1f KB",
-                    bytes / 1024.0
+                    Locale.US, "%.1f KB", bytes / 1024.0
             );
         }
 
         return String.format(
-                Locale.US, "%.1f MB",
+                Locale.US,
+                "%.1f MB",
                 bytes / (1024.0 * 1024.0)
         );
     }
@@ -618,27 +586,21 @@ public class MainActivity extends Activity {
                     )
                     .setPositiveButton("OK", null)
                     .show();
-
             return;
         }
 
-        AlertDialog dialog =
-                new AlertDialog.Builder(this).create();
+        AlertDialog dialog = new AlertDialog.Builder(this).create();
 
         LinearLayout box = new LinearLayout(this);
         box.setOrientation(LinearLayout.VERTICAL);
-        box.setPadding(
-                dp(12), dp(12), dp(12), dp(12)
-        );
+        box.setPadding(dp(12), dp(12), dp(12), dp(12));
 
         TextView title = new TextView(this);
         title.setText(f.getName());
         title.setTextSize(16);
-
         box.addView(title);
 
         VideoView video = new VideoView(this);
-
         box.addView(
                 video,
                 new LinearLayout.LayoutParams(-1, dp(240))
@@ -653,7 +615,6 @@ public class MainActivity extends Activity {
                     "Android may not support this format.",
                     Toast.LENGTH_LONG
             ).show();
-
             return true;
         });
 
@@ -672,16 +633,14 @@ public class MainActivity extends Activity {
 
         dialog.show();
 
-        dialog.getButton(
-                AlertDialog.BUTTON_POSITIVE
-        ).setOnClickListener(v -> {
-            try {
-                video.stopPlayback();
-            } catch (Exception ignored) {
-            }
-
-            dialog.dismiss();
-        });
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(v -> {
+                    try {
+                        video.stopPlayback();
+                    } catch (Exception ignored) {
+                    }
+                    dialog.dismiss();
+                });
 
         video.start();
     }
@@ -701,5 +660,28 @@ public class MainActivity extends Activity {
                                 "Deleted",
                                 Toast.LENGTH_SHORT
                         ).show();
-}
-  
+                    }
+                    showLibrary();
+                })
+                .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.destroy();
+        }
+
+        executor.shutdownNow();
+        super.onDestroy();
+    }
+                                   }
